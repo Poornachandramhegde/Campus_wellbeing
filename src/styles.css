@@ -1,0 +1,657 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+/* Dashboard Styles */
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.dashboard-header {
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  color: #2c3e50;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.welcome-message {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Card Styles */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e8ed;
+}
+
+.card h2,
+.card h3 {
+  color: #2c3e50;
+  margin-bottom: 16px;
+  font-size: 1.4rem;
+}
+
+.card h3 {
+  font-size: 1.2rem;
+}
+
+.profile-info p,
+.mentor-info p,
+.counsellor-info p {
+  margin-bottom: 12px;
+  color: #555;
+}
+
+.profile-info strong,
+.mentor-info strong,
+.counsellor-info strong {
+  color: #2c3e50;
+  margin-right: 8px;
+}
+
+/* Counsellor Card */
+.counsellor-card {
+  background: #f8f9fa;
+  border-left: 4px solid #3498db;
+}
+
+.privacy-notice {
+  margin-top: 16px;
+  padding: 12px;
+  background: #e8f4f8;
+  border-radius: 4px;
+  color: #2980b9;
+  font-size: 0.9rem;
+}
+
+/* Action Section */
+.action-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Button Styles */
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
+.btn-secondary {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #7f8c8d;
+}
+
+.btn-large {
+  padding: 16px 32px;
+  font-size: 1.1rem;
+}
+
+/* Counselling Booking Page */
+.counselling-booking {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.page-header h1 {
+  color: #2c3e50;
+  font-size: 2rem;
+}
+
+.booking-content {
+  background: white;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.info-section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e1e8ed;
+}
+
+.info-section h2 {
+  color: #2c3e50;
+  margin-bottom: 12px;
+}
+
+.info-section p {
+  color: #555;
+  line-height: 1.8;
+}
+
+/* Form Styles */
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.priority-help {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.privacy-notice-box {
+  background: #e8f4f8;
+  padding: 16px;
+  border-radius: 6px;
+  border-left: 4px solid #3498db;
+  margin: 10px 0;
+}
+
+.privacy-notice-box p {
+  margin-bottom: 8px;
+  color: #2980b9;
+  font-size: 0.9rem;
+}
+
+.privacy-notice-box p:last-child {
+  margin-bottom: 0;
+}
+
+/* Confirmation Card */
+.confirmation-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 30px;
+  border: 2px solid #27ae60;
+}
+
+.confirmation-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.confirmation-header h2 {
+  color: #27ae60;
+  font-size: 1.8rem;
+}
+
+.ticket-details {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ticket-info {
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  border-left: 4px solid #3498db;
+}
+
+.ticket-info p {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.ticket-id {
+  font-family: 'Courier New', monospace;
+  color: #3498db;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.status-badge.submitted {
+  background-color: #3498db;
+  color: white;
+}
+
+.request-summary,
+.sla-message,
+.next-steps {
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.request-summary h3,
+.sla-message h3,
+.next-steps h3 {
+  color: #2c3e50;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+.request-summary p {
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.sla-text {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  line-height: 1.8;
+}
+
+.next-steps ul {
+  margin-left: 20px;
+  color: #555;
+}
+
+.next-steps li {
+  margin-bottom: 8px;
+}
+
+.action-buttons {
+  margin-top: 30px;
+  text-align: center;
+}
+
+/* Counsellor Dashboard Styles */
+.counsellor-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.queue-card {
+  margin-top: 20px;
+}
+
+/* Ticket Queue Styles */
+.ticket-queue {
+  margin-top: 20px;
+}
+
+.empty-queue {
+  text-align: center;
+  color: #7f8c8d;
+  padding: 40px;
+  font-size: 1.1rem;
+}
+
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Ticket Card Styles */
+.ticket-card {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e8ed;
+  border-left: 4px solid #3498db;
+  transition: box-shadow 0.3s ease;
+}
+
+.ticket-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.ticket-id-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ticket-id-label {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.ticket-id-value {
+  font-family: 'Courier New', monospace;
+  color: #3498db;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.ticket-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.priority-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.ticket-body {
+  margin-bottom: 20px;
+}
+
+.ticket-info-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.info-item {
+  color: #555;
+}
+
+.info-item strong {
+  color: #2c3e50;
+  margin-right: 8px;
+}
+
+.ticket-reason {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #3498db;
+}
+
+.ticket-reason strong {
+  color: #2c3e50;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.ticket-reason p {
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.sla-display {
+  margin-top: 15px;
+  padding: 12px;
+  background: #e8f4f8;
+  border-radius: 6px;
+  color: #2980b9;
+  font-size: 0.95rem;
+}
+
+.sla-display strong {
+  color: #2980b9;
+}
+
+.guidance-notes {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f0f8f0;
+  border-radius: 6px;
+  border-left: 3px solid #27ae60;
+}
+
+.guidance-notes strong {
+  color: #27ae60;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.guidance-notes p {
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.ticket-footer {
+  border-top: 1px solid #e1e8ed;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+/* Ticket Actions Styles */
+.ticket-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-success {
+  background-color: #27ae60;
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #229954;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+}
+
+.btn-warning {
+  background-color: #f39c12;
+  color: white;
+}
+
+.btn-warning:hover {
+  background-color: #e67e22;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+}
+
+.action-disabled {
+  color: #7f8c8d;
+  font-style: italic;
+  padding: 10px;
+  background: #ecf0f1;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* Close Ticket Form Styles */
+.close-ticket-form {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 6px;
+  border: 1px solid #e1e8ed;
+}
+
+.close-ticket-form h4 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.form-help {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 15px;
+  }
+
+  .counselling-booking {
+    padding: 15px;
+  }
+
+  .booking-content {
+    padding: 20px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-header h1,
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .counsellor-dashboard {
+    padding: 15px;
+  }
+
+  .ticket-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ticket-info-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-actions {
+    flex-direction: column;
+  }
+
+  .ticket-actions .btn {
+    width: 100%;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+}
+
