@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import '../styles.css';
 
-const BookingForm = ({ onSubmit }) => {
+const BookingForm = ({ onSubmit, isLoading }) => {
   const [formData, setFormData] = useState({
+    mode: 'Offline',
     preferredDate: '',
     preferredTime: '',
     reason: '',
@@ -24,6 +25,35 @@ const BookingForm = ({ onSubmit }) => {
 
   return (
     <form className="booking-form" onSubmit={handleSubmit}>
+      {/* Session Mode Selector */}
+      <div className="form-group">
+        <label>Session Mode *</label>
+        <div style={{ display: 'flex', gap: '20px', marginTop: '6px', marginBottom: '10px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'normal', cursor: 'pointer' }}>
+            <input
+              type="radio"
+              name="mode"
+              value="Offline"
+              checked={formData.mode === 'Offline'}
+              onChange={handleChange}
+              disabled={isLoading}
+            />
+            Offline Counselling (In-Person)
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'normal', cursor: 'pointer' }}>
+            <input
+              type="radio"
+              name="mode"
+              value="Online"
+              checked={formData.mode === 'Online'}
+              onChange={handleChange}
+              disabled={isLoading}
+            />
+            Online Counselling (Google Meet)
+          </label>
+        </div>
+      </div>
+
       <div className="form-group">
         <label htmlFor="preferredDate">Preferred Date *</label>
         <input
@@ -33,6 +63,7 @@ const BookingForm = ({ onSubmit }) => {
           value={formData.preferredDate}
           onChange={handleChange}
           required
+          disabled={isLoading}
         />
       </div>
 
@@ -45,6 +76,7 @@ const BookingForm = ({ onSubmit }) => {
           value={formData.preferredTime}
           onChange={handleChange}
           required
+          disabled={isLoading}
         />
       </div>
 
@@ -58,6 +90,7 @@ const BookingForm = ({ onSubmit }) => {
           rows="5"
           placeholder="Please share what you'd like to discuss (this information is confidential)"
           required
+          disabled={isLoading}
         />
       </div>
 
@@ -69,6 +102,7 @@ const BookingForm = ({ onSubmit }) => {
           value={formData.priority}
           onChange={handleChange}
           required
+          disabled={isLoading}
         >
           <option value="Low">Low</option>
           <option value="Medium">Medium</option>
@@ -84,8 +118,8 @@ const BookingForm = ({ onSubmit }) => {
         <p>Your request is confidential and visible only to authorized counsellors.</p>
       </div>
 
-      <button type="submit" className="btn btn-primary">
-        Raise Counselling Request
+      <button type="submit" className="btn btn-primary" disabled={isLoading}>
+        {isLoading ? 'Booking Online Session...' : 'Raise Counselling Request'}
       </button>
     </form>
   );

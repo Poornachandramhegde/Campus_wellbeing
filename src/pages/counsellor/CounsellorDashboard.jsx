@@ -5,8 +5,8 @@ import '../../styles.css';
 const CounsellorDashboard = () => {
   // Mock counsellor profile data
   const counsellor = {
-    name: 'Ms. Smitha S',
-    email: 'smithas@ac.in',
+    name: 'Dr. Leena C',
+    email: 'leenac@rnsit.ac.in',
     role: 'Student Counsellor',
     officeHours: 'Monday-Friday, 9:00 AM - 5:00 PM'
   };

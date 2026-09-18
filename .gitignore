@@ -27,3 +27,12 @@ yarn-error.log*
 *.swo
 *~
 
+# Backend secrets & configuration
+.env
+backend/.env
+backend/oauth.json
+backend/token.json
+oauth.json
+token.json
+credentials.json
+

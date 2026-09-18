@@ -88,6 +88,19 @@ const TicketCard = ({ ticket, onStatusUpdate, onCloseTicket }) => {
           </div>
         </div>
 
+        {ticket.mode && (
+          <div className="ticket-info-row">
+            <div className="info-item">
+              <strong>Session Mode:</strong> {ticket.mode}
+            </div>
+            {ticket.meetingLink && (
+              <div className="info-item">
+                <strong>Meeting Link:</strong> <a href={ticket.meetingLink} target="_blank" rel="noopener noreferrer" style={{color: '#3498db', textDecoration: 'underline'}}>{ticket.meetingLink}</a>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="ticket-reason">
           <strong>Reason for Counselling:</strong>
           <p>{ticket.reason}</p>

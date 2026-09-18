@@ -29,9 +29,28 @@ const ConfirmationCard = ({ ticketId, priority, formData }) => {
 
         <div className="request-summary">
           <h3>Request Summary</h3>
+          <p><strong>Session Mode:</strong> {formData.mode || 'Offline'}</p>
           <p><strong>Preferred Date:</strong> {formData.preferredDate}</p>
           <p><strong>Preferred Time:</strong> {formData.preferredTime}</p>
           <p><strong>Priority:</strong> {formData.priority}</p>
+          
+          {formData.mode === 'Online' && formData.meetingLink && (
+            <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e8f4f8', borderRadius: '6px', borderLeft: '4px solid #3498db' }}>
+              <p style={{ margin: 0, fontWeight: 'bold', color: '#2980b9' }}>Google Meet Virtual Room:</p>
+              <a 
+                href={formData.meetingLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn btn-primary"
+                style={{ display: 'inline-block', marginTop: '10px', textDecoration: 'none' }}
+              >
+                Join Meeting
+              </a>
+              <p style={{ margin: '10px 0 0 0', fontSize: '0.85rem', color: '#7f8c8d' }}>
+                A calendar invitation has been sent to you and your counsellor.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="sla-message">
