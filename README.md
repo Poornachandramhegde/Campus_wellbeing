@@ -2,6 +2,7 @@
 
 [![React](https://img.shields.io/badge/Frontend-React%2018-blue.svg)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Backend-Express.js%20Node-green.svg)](https://nodejs.org/)
+[![Database](https://img.shields.io/badge/Database-MySQL%208.0-blue.svg)](https://www.mysql.com/)
 [![Google Calendar](https://img.shields.io/badge/Integration-Google%20Calendar%20%26%20Meet-orange.svg)](https://developers.google.com/calendar)
 
 ## 📋 Project Overview
@@ -13,7 +14,7 @@ A full-stack, privacy-aware, non-clinical counselling support and well-being sys
 ## ✨ Key Features
 
 ### 1. 🎓 Student ERP Dashboard
-- Displays student details (ID, name, email, department, semester).
+- Displays student details (USN, name, email, department, semester).
 - Assigned **Academic Mentor** and **Student Counsellor** contact cards with office hours.
 - Integrated **Well-Being & Booking Chatbot Widget**.
 - Navigation to session booking and ticket status tracking.
@@ -44,8 +45,8 @@ A full-stack, privacy-aware, non-clinical counselling support and well-being sys
 ## 🛠️ Tech Stack
 
 - **Frontend**: React 18, React Router DOM v6, Vanilla CSS3 (ERP Theme Design System).
-- **Backend**: Node.js, Express.js, Google APIs Client Library (`googleapis`), Nodemailer, CORS, Dotenv.
-- **Persistence**: File-based transactional JSON database (`backend/data/appointments.json`).
+- **Backend**: Node.js, Express.js, Google APIs Client Library (`googleapis`), Nodemailer, CORS, Dotenv, JSONWebToken, BcryptJS.
+- **Database**: MySQL 8.0 (`mysql2` connection pool with promises).
 
 ---
 
@@ -55,28 +56,32 @@ A full-stack, privacy-aware, non-clinical counselling support and well-being sys
 ERP_Systemforclg/
 ├── backend/
 │   ├── config/
+│   │   ├── db.js                  # MySQL connection pool configuration
 │   │   └── googleAuth.js          # Google OAuth2 client & token storage logic
 │   ├── controllers/
-│   │   └── counsellingController.js # Booking validation, DB persistence, and listing
-│   ├── data/
-│   │   └── appointments.json      # JSON persistence store
+│   │   ├── authController.js      # Student signup, login, profile, and mentors list
+│   │   ├── counsellingController.js # Session booking, conflict checks, and queue
+│   │   └── userController.js      # User management endpoint
+│   ├── middleware/
+│   │   └── authMiddleware.js      # JWT verification middleware
 │   ├── routes/
-│   │   └── counsellingRoutes.js   # API endpoints & OAuth callback
+│   │   ├── authRoutes.js          # Authentication & mentor routes
+│   │   ├── counsellingRoutes.js   # Counselling API endpoints & OAuth callback
+│   │   └── userRoutes.js          # User API routes
 │   ├── services/
-│   │   ├── emailService.js        # Multi-recipient email dispatch
+│   │   ├── emailService.js        # Multi-recipient transactional email dispatch
 │   │   └── googleCalendarService.js # Google Calendar event & Meet link generation
-│   ├── .env                       # Backend credentials & configuration
+│   ├── .env.example               # Environment variables template (placeholders only)
 │   ├── package.json
 │   └── server.js                  # Express application entry point
+├── database/
+│   ├── schema.sql                 # MySQL schema definition (DDL for tables & keys)
+│   └── seed.sql                   # Safe demo seed data (counsellor, mentors, demo student)
 ├── public/
 │   └── index.html
 ├── src/
 │   ├── components/
 │   │   ├── counsellor/            # Counsellor dashboard sub-components
-│   │   │   ├── CloseTicketForm.jsx
-│   │   │   ├── TicketActions.jsx
-│   │   │   ├── TicketCard.jsx
-│   │   │   └── TicketQueue.jsx
 │   │   ├── BookingForm.jsx        # Session booking form
 │   │   ├── ChatbotWidget.jsx      # Well-being chatbot widget
 │   │   ├── ConfirmationCard.jsx   # Post-booking confirmation screen
@@ -87,108 +92,121 @@ ERP_Systemforclg/
 │   │   ├── counsellor/
 │   │   │   └── CounsellorDashboard.jsx # Counsellor review interface
 │   │   ├── CounsellingBooking.jsx      # Student booking page
-│   │   └── Dashboard.jsx               # Student ERP homepage
+│   │   ├── Dashboard.jsx               # Student ERP homepage
+│   │   ├── Login.jsx                   # Student login page
+│   │   └── Signup.jsx                  # Student signup page
 │   ├── App.jsx                    # Routing configuration
 │   ├── index.js                   # React entry point
 │   └── styles.css                 # Global CSS styles
+├── .gitignore                     # Git ignore rules protecting local secrets
 ├── package.json                   # Frontend dependencies
 └── README.md
 ```
 
 ---
 
-## 🚀 How to Run the System Locally
+## 🗄️ LOCAL DATABASE SETUP
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) (version 16 or higher recommended)
-- `npm` (version 7 or higher)
+### Database Architecture & Portability
+- The application uses **MySQL 8.0**.
+- Each developer runs their own independent local MySQL server.
+- The GitHub repository contains the schema definition ([`database/schema.sql`](database/schema.sql)) and safe demo seed data ([`database/seed.sql`](database/seed.sql)).
+- The actual database itself is **NOT** stored in GitHub.
+- Database passwords, OAuth tokens, and SMTP credentials remain strictly on each developer's local computer.
+- In `backend/.env`, `DB_HOST=localhost` refers to the MySQL instance running on **THAT developer's own local computer**.
 
 ---
 
-### Step 1: Start the Backend Server (Port 5000)
+### Step-by-Step Local Setup Flow
 
-1. Open a terminal and navigate to the `backend` folder:
+1. **Clone the repository**:
    ```bash
+   git clone <repository-url>
+   cd ERP_Systemforclg
+   ```
+
+2. **Install Node.js dependencies**:
+   ```bash
+   # Install frontend dependencies
+   npm install
+
+   # Install backend dependencies
    cd backend
-   ```
-2. Install backend dependencies:
-   ```bash
    npm install
+   cd ..
    ```
-3. Start the Express server:
+
+3. **Install and start MySQL 8.0**:
+   - Ensure the MySQL 8.0 service is running on your machine (default port `3306`).
+
+4. **Open MySQL Workbench (or MySQL CLI)**:
+   - Connect to your local MySQL root instance.
+
+5. **Run the Schema script**:
+   - Execute [`database/schema.sql`](database/schema.sql) in MySQL Workbench or run:
+     ```bash
+     mysql -u root -p < database/schema.sql
+     ```
+   - This creates the `erp_wellbeing` database and the 6 required tables: `users`, `user_login`, `counsellors`, `mentors`, `appointments`, `counselling_notes`.
+
+6. **Run the Seed script**:
+   - Execute [`database/seed.sql`](database/seed.sql) in MySQL Workbench or run:
+     ```bash
+     mysql -u root -p erp_wellbeing < database/seed.sql
+     ```
+   - This populates demo records for counsellor (`Dr. Leena C`), mentors (`Dr. Archana J R`, etc.), and a demo student (`student@demo.local` / `password123`).
+
+7. **Copy Environment Template**:
    ```bash
-   npm start
+   # From root or backend folder
+   cp backend/.env.example backend/.env
    ```
-   *The backend will start at `http://localhost:5000`.*
 
----
-
-### Step 2: Start the Frontend Application (Port 3000)
-
-1. Open a **second terminal** in the root directory (`ERP_Systemforclg`):
-   ```bash
-   npm install
+8. **Enter your local MySQL credentials in `backend/.env`**:
+   ```env
+   PORT=5000
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_USER=root
+   DB_PASSWORD=YOUR_LOCAL_MYSQL_PASSWORD
+   DB_NAME=erp_wellbeing
+   JWT_SECRET=your_local_secret_key_change_me
+   JWT_EXPIRES_IN=1d
    ```
-2. Start the React development server:
-   ```bash
-   npm start
-   ```
-3. The application will open automatically in your browser at:
-   👉 **`http://localhost:3000`**
 
----
+9. **(Optional) Configure Google OAuth locally**:
+   - If Google Calendar and Meet links are needed for online booking, add your Google Cloud OAuth Client credentials to `backend/.env`:
+     ```env
+     GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
+     GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
+     GOOGLE_REDIRECT_URI=http://localhost:5000/api/auth/google/callback
+     ```
+   - *Note: OAuth credentials and generated `oauth.json` tokens are developer-specific and must never be committed.*
 
-## ☁️ Running on Google Colab
+10. **(Optional) Configure SMTP locally**:
+    - If automated transactional email notifications are needed, configure your SMTP credentials in `backend/.env`:
+      ```env
+      SMTP_HOST=smtp.gmail.com
+      SMTP_PORT=465
+      SMTP_SECURE=true
+      SMTP_USER=YOUR_SMTP_EMAIL@gmail.com
+      SMTP_PASSWORD=YOUR_SMTP_APP_PASSWORD
+      ```
+    - *Note: SMTP credentials are developer-specific and must never be committed.*
 
-You can run both the Backend and Frontend servers inside a **Google Colab** environment and expose them via public tunnels.
+11. **Start the backend server**:
+    ```bash
+    cd backend
+    npm start
+    ```
+    *The backend server will start on `http://localhost:5000`.*
 
-### Colab Execution Steps
-
-Create a new notebook in Google Colab and run the following cells:
-
-#### Cell 1: Clone or Upload Repository & Install Node.js
-```python
-# 1. Install Node.js LTS (v18.x)
-!curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-!apt-get install -y nodejs
-
-# 2. Check Node & npm versions
-!node -v
-!npm -v
-```
-
-#### Cell 2: Install Project Dependencies
-```python
-# Install frontend dependencies
-!npm install
-
-# Install backend dependencies
-%cd backend
-!npm install
-%cd ..
-```
-
-#### Cell 3: Start Backend & Frontend in Background
-```python
-import subprocess
-import time
-
-# Start Backend Server on Port 5000
-backend_proc = subprocess.Popen(["node", "server.js"], cwd="backend")
-print("Backend process started on port 5000.")
-
-# Start Frontend React App on Port 3000
-frontend_proc = subprocess.Popen(["npm", "start"], cwd=".")
-print("Frontend process starting on port 3000 (Give it ~20-30 seconds to compile)...")
-time.sleep(15)
-```
-
-#### Cell 4: Expose Ports Using Cloudflared or Localtunnel
-```python
-# Option A: Expose Frontend using LocalTunnel
-!npx localtunnel --port 3000 & curl https://loca.lt/mytunnelpassword
-```
-*Click the generated URL and paste the IP password to access your ERP application.*
+12. **Start the frontend application**:
+    - Open a second terminal in the project root:
+      ```bash
+      npm start
+      ```
+    - The application opens at **`http://localhost:3000`**.
 
 ---
 
@@ -215,6 +233,8 @@ If you see the error `GaxiosError: invalid_grant - Token has been expired or rev
 
 | Route | Description |
 | :--- | :--- |
+| **`http://localhost:3000/login`** | **Student Login**: Sign in with email and password (demo: `student@demo.local` / `password123`). |
+| **`http://localhost:3000/signup`** | **Student Registration**: Create a new account with mentor assignment. |
 | **`http://localhost:3000/`** | **Student ERP Dashboard**: View student profile, mentor/counsellor info, and chatbot. |
 | **`http://localhost:3000/counselling-booking`** | **Booking Page**: Submit Offline or Online counselling requests. |
 | **`http://localhost:3000/counsellor-dashboard`** | **Counsellor Portal**: Manage ticket queues, change statuses, and access Meet links. |
