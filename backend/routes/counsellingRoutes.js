@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { bookCounselling, getAppointmentsList } = require('../controllers/counsellingController');
+const {
+  bookCounselling,
+  getAppointmentsList,
+  getMyAppointments
+} = require('../controllers/counsellingController');
 const { getOAuthClient, saveTokens } = require('../config/googleAuth');
 const authMiddleware = require('../middleware/authMiddleware');
 const db = require('../config/db');
@@ -25,8 +29,11 @@ router.get('/test-db', async (req, res) => {
 });
 
 router.post('/counselling/book', authMiddleware, bookCounselling);
-router.get('/counselling/list', getAppointmentsList);
-
+router.get(
+  '/counselling/my-history',
+  authMiddleware,
+  getMyAppointments
+);
 
 // Google Auth Redirect Route
 router.get('/auth/google', (req, res) => {

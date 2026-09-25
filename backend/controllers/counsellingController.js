@@ -220,7 +220,56 @@ const getAppointmentsList = (req, res) => {
   return res.json(appointments);
 };
 
+
+const getMyAppointments = async (req, res) => {
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required.'
+      });
+    }
+
+    const [userRows] = await pool.query(
+      'SELECT id, usn, email FROM users WHERE id = ? LIMIT 1',
+      [req.user.id]
+    );
+
+    if (userRows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.'
+      });
+    }
+
+    const user = userRows[0];
+
+    const appointments = getAppointments();
+
+    const userAppointments = appointments.filter((appointment) => {
+      return (
+        appointment.studentEmail === user.email ||
+        appointment.studentId === user.usn ||
+        appointment.studentId === String(user.id)
+      );
+    });
+
+    return res.status(200).json({
+      success: true,
+      appointments: userAppointments
+    });
+  } catch (error) {
+    console.error('Error fetching appointment history:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch appointment history.'
+    });
+  }
+};
+
 module.exports = {
   bookCounselling,
-  getAppointmentsList
+  getAppointmentsList,
+  getMyAppointments
 };
