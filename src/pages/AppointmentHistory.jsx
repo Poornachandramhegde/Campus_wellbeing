@@ -5,6 +5,108 @@ import { useAuth } from '../context/AuthContext';
 
 const API_BASE = `${import.meta.env.VITE_API_URL || ''}/api`;
 
+// Convert appointment date into a JavaScript Date
+const getAppointmentDate = (appointment) => {
+  if (!appointment.preferredDate) {
+    return null;
+  }
+
+  const date = new Date(appointment.preferredDate);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date;
+};
+
+// Check whether an appointment is in the past
+const isPastAppointment = (appointment) => {
+  const appointmentDate = getAppointmentDate(appointment);
+
+  if (!appointmentDate) {
+    return false;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  appointmentDate.setHours(0, 0, 0, 0);
+
+  return appointmentDate < today;
+};
+
+// Check whether an appointment is upcoming
+const isUpcomingAppointment = (appointment) => {
+  const appointmentDate = getAppointmentDate(appointment);
+
+  if (!appointmentDate) {
+    return false;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  appointmentDate.setHours(0, 0, 0, 0);
+
+  return appointmentDate >= today;
+};
+
+// Normalize status for filtering
+const normalizeStatus = (status) => {
+  const normalized = String(status || '')
+    .trim()
+    .toLowerCase();
+
+  if (
+    normalized === 'submitted' ||
+    normalized === 'booked' ||
+    normalized === 'confirmed' ||
+    normalized === 'approved'
+  ) {
+    return 'booked';
+  }
+
+  if (normalized === 'completed') {
+    return 'completed';
+  }
+
+  if (
+    normalized === 'cancelled' ||
+    normalized === 'canceled' ||
+    normalized === 'rejected'
+  ) {
+    return 'cancelled';
+  }
+
+  return normalized || 'unknown';
+};
+
+// Display a readable status
+const getStatusLabel = (status) => {
+  if (!status) return 'Unknown';
+
+  return String(status).charAt(0).toUpperCase() +
+    String(status).slice(1);
+};
+
+// Select CSS class based on appointment status
+const getStatusClass = (status) => {
+  const normalizedStatus = normalizeStatus(status);
+
+  if (normalizedStatus === 'booked') {
+    return 'appointment-status status-confirmed';
+  }
+
+  if (normalizedStatus === 'completed') {
+    return 'appointment-status status-completed';
+  }
+
+  if (normalizedStatus === 'cancelled') {
+    return 'appointment-status status-cancelled';
+  }
+
+  return 'appointment-status';
+};
+
 const AppointmentHistory = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
@@ -58,81 +160,6 @@ const AppointmentHistory = () => {
     }
   }, [token]);
 
-  // Convert appointment date into a JavaScript Date
-  const getAppointmentDate = (appointment) => {
-    if (!appointment.preferredDate) {
-      return null;
-    }
-
-    const date = new Date(appointment.preferredDate);
-
-    if (Number.isNaN(date.getTime())) {
-      return null;
-    }
-
-    return date;
-  };
-
-  // Check whether an appointment is in the past
-  const isPastAppointment = (appointment) => {
-    const appointmentDate = getAppointmentDate(appointment);
-
-    if (!appointmentDate) {
-      return false;
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    appointmentDate.setHours(0, 0, 0, 0);
-
-    return appointmentDate < today;
-  };
-
-  // Check whether an appointment is upcoming
-  const isUpcomingAppointment = (appointment) => {
-    const appointmentDate = getAppointmentDate(appointment);
-
-    if (!appointmentDate) {
-      return false;
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    appointmentDate.setHours(0, 0, 0, 0);
-
-    return appointmentDate >= today;
-  };
-
-  // Normalize status for filtering
-  const normalizeStatus = (status) => {
-    const normalized = String(status || '')
-      .trim()
-      .toLowerCase();
-
-    if (
-      normalized === 'submitted' ||
-      normalized === 'booked' ||
-      normalized === 'confirmed' ||
-      normalized === 'approved'
-    ) {
-      return 'booked';
-    }
-
-    if (normalized === 'completed') {
-      return 'completed';
-    }
-
-    if (
-      normalized === 'cancelled' ||
-      normalized === 'canceled' ||
-      normalized === 'rejected'
-    ) {
-      return 'cancelled';
-    }
-
-    return normalized || 'unknown';
-  };
-
   // Apply the selected filter
   const filteredAppointments = useMemo(() => {
     return appointments.filter((appointment) => {
@@ -160,33 +187,6 @@ const AppointmentHistory = () => {
       }
     });
   }, [appointments, activeFilter]);
-
-  // Display a readable status
-  const getStatusLabel = (status) => {
-    if (!status) return 'Unknown';
-
-    return String(status).charAt(0).toUpperCase() +
-      String(status).slice(1);
-  };
-
-  // Select CSS class based on appointment status
-  const getStatusClass = (status) => {
-    const normalizedStatus = normalizeStatus(status);
-
-    if (normalizedStatus === 'booked') {
-      return 'appointment-status status-confirmed';
-    }
-
-    if (normalizedStatus === 'completed') {
-      return 'appointment-status status-completed';
-    }
-
-    if (normalizedStatus === 'cancelled') {
-      return 'appointment-status status-cancelled';
-    }
-
-    return 'appointment-status';
-  };
 
   // Display filter count
   const getFilterCount = (filter) => {
