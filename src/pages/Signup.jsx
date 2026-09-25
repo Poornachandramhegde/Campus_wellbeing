@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles.css';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 const Signup = () => {
   const navigate = useNavigate();
   const { signup, isAuthenticated } = useAuth();
@@ -34,7 +36,7 @@ const Signup = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/mentors');
+        const response = await fetch(`${API_URL}/api/mentors`);
         if (response.ok) {
           const data = await response.json();
           if (data.success && Array.isArray(data.mentors)) {

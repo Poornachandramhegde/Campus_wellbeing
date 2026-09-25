@@ -15,7 +15,6 @@ const Navbar = () => {
   return (
     <nav className="main-navbar">
       <div className="navbar-brand">
-        <span className="navbar-logo">CW</span>
         <span>Campus Wellbeing</span>
       </div>
 

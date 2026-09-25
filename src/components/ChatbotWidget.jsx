@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { TicketContext } from '../context/TicketContext';
 import '../styles.css';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 const ChatbotWidget = () => {
   const { student, addTicket } = useContext(TicketContext);
   const [isOpen, setIsOpen] = useState(false);
@@ -223,7 +225,7 @@ const ChatbotWidget = () => {
           priority: booking.priority
         };
 
-        fetch('http://localhost:5000/api/counselling/book', {
+        fetch(`${API_URL}/api/counselling/book`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

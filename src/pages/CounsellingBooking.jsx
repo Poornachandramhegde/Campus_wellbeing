@@ -6,6 +6,8 @@ import { TicketContext } from '../context/TicketContext';
 import { useAuth } from '../context/AuthContext';
 import '../styles.css';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 const CounsellingBooking = () => {
   const navigate = useNavigate();
   const { student, addTicket } = useContext(TicketContext);
@@ -49,7 +51,7 @@ const CounsellingBooking = () => {
       priority: formData.priority
     };
 
-    fetch('http://localhost:5000/api/counselling/book', {
+    fetch(`${API_URL}/api/counselling/book`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

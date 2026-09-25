@@ -73,3 +73,12 @@ desktop.ini
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Certificates and OAuth credentials
+ca.pem
+oauth.json

@@ -3,13 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import CounsellorCard from '../components/CounsellorCard';
 import ChatbotWidget from '../components/ChatbotWidget';
 import { TicketContext } from '../context/TicketContext';
-import { useAuth } from '../context/AuthContext';
 import '../styles.css';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { student } = useContext(TicketContext);
-  const { logout } = useAuth();
 
   // Read mentor data from student context
   const mentor = student.mentor || {
@@ -29,36 +27,10 @@ const Dashboard = () => {
     navigate('/counselling-booking');
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login', { replace: true });
-  };
-
   return (
     <div className="dashboard">
-      <div className="dashboard-header-container">
-        <div className="dashboard-header">
-          <h1>Student Dashboard</h1>
-          <p className="welcome-message">Welcome back, {student.name}</p>
-        </div>
-        <div className="dashboard-header-actions">
-          <div className="user-badge">
-            <span className="user-avatar-circle">
-              {student.name ? student.name.charAt(0).toUpperCase() : 'S'}
-            </span>
-            <div className="user-badge-info">
-              <span className="user-badge-name">{student.name}</span>
-              <span className="user-badge-usn">{student.studentId}</span>
-            </div>
-          </div>
-          <button 
-            className="btn btn-outline-danger btn-logout"
-            onClick={handleLogout}
-            title="Sign out of ERP"
-          >
-            Logout
-          </button>
-        </div>
+      <div className="dashboard-header">
+        <p className="welcome-message">Welcome back, {student.name}</p>
       </div>
 
       <div className="dashboard-content">

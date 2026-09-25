@@ -3,6 +3,8 @@ import { useAuth } from './AuthContext';
 
 export const TicketContext = createContext();
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export const TicketProvider = ({ children }) => {
   const { user } = useAuth();
 
@@ -90,7 +92,7 @@ export const TicketProvider = ({ children }) => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/counselling/list');
+        const response = await fetch(`${API_URL}/api/counselling/list`);
         if (response.ok) {
           const backendApps = await response.json();
           // Map backend appointments into standard ticket format

@@ -24,22 +24,20 @@ body {
 .dashboard {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 24px 20px;
 }
 
 .dashboard-header {
-  margin-bottom: 30px;
-}
-
-.dashboard-header h1 {
-  color: #2c3e50;
-  font-size: 2rem;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 14px;
 }
 
 .welcome-message {
-  color: #7f8c8d;
-  font-size: 1.1rem;
+  color: #2c3e50;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
 }
 
 .dashboard-content {
