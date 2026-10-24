@@ -4,9 +4,8 @@ import BookingForm from '../components/BookingForm';
 import ConfirmationCard from '../components/ConfirmationCard';
 import { TicketContext } from '../context/TicketContext';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE, safeJson } from '../config/api';
 import '../styles.css';
-
-const API_URL = import.meta.env.VITE_API_URL || '';
 
 const CounsellingBooking = () => {
   const navigate = useNavigate();
@@ -51,7 +50,7 @@ const CounsellingBooking = () => {
       priority: formData.priority
     };
 
-    fetch(`${API_URL}/api/counselling/book`, {
+    fetch(`${API_BASE}/counselling/book`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,7 +60,14 @@ const CounsellingBooking = () => {
     })
 
       .then(async (response) => {
-        const data = await response.json();
+        let data;
+        try {
+          data = await safeJson(response, 'Booking service error.');
+        } catch (parseErr) {
+          setIsLoading(false);
+          setError(parseErr.message);
+          return;
+        }
         setIsLoading(false);
 
         if (response.ok && data.success) {

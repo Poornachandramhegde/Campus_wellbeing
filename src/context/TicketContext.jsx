@@ -1,9 +1,9 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 
-export const TicketContext = createContext();
+import { API_BASE } from '../config/api';
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+export const TicketContext = createContext();
 
 export const TicketProvider = ({ children }) => {
   const { user } = useAuth();
@@ -92,8 +92,9 @@ export const TicketProvider = ({ children }) => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/counselling/list`);
-        if (response.ok) {
+        const response = await fetch(`${API_BASE}/counselling/list`);
+        const contentType = response.headers.get('content-type') || '';
+        if (response.ok && contentType.includes('application/json')) {
           const backendApps = await response.json();
           // Map backend appointments into standard ticket format
           const mappedTickets = backendApps.map((app) => ({

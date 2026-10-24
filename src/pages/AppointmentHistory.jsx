@@ -2,8 +2,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-
-const API_BASE = `${import.meta.env.VITE_API_URL || ''}/api`;
+import { API_BASE, safeJson } from '../config/api';
 
 // Convert appointment date into a JavaScript Date
 const getAppointmentDate = (appointment) => {
@@ -136,7 +135,7 @@ const AppointmentHistory = () => {
           }
         );
 
-        const data = await response.json();
+        const data = await safeJson(response, 'Unable to load appointment history.');
 
         if (!response.ok || !data.success) {
           throw new Error(

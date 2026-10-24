@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { TicketContext } from '../context/TicketContext';
+import { API_BASE, safeJson } from '../config/api';
 import '../styles.css';
-
-const API_URL = import.meta.env.VITE_API_URL || '';
 
 const ChatbotWidget = () => {
   const { student, addTicket } = useContext(TicketContext);
@@ -225,7 +224,7 @@ const ChatbotWidget = () => {
           priority: booking.priority
         };
 
-        fetch(`${API_URL}/api/counselling/book`, {
+        fetch(`${API_BASE}/counselling/book`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -233,7 +232,21 @@ const ChatbotWidget = () => {
           body: JSON.stringify(payload)
         })
           .then(async (response) => {
-            const data = await response.json();
+            let data;
+            try {
+              data = await safeJson(response, 'Booking service error.');
+            } catch (parseErr) {
+              setIsLoading(false);
+              setMessages((prev) => [
+                ...prev,
+                {
+                  id: `bot-err-${Date.now()}`,
+                  sender: 'bot',
+                  text: 'Sorry, the counselling booking service is temporarily unavailable. Please try again later.'
+                }
+              ]);
+              return;
+            }
             setIsLoading(false);
 
             if (response.ok && data.success) {

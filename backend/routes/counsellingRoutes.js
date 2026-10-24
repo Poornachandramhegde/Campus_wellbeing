@@ -34,6 +34,7 @@ router.get(
   authMiddleware,
   getMyAppointments
 );
+router.get('/counselling/list', getAppointmentsList);
 
 // Google Auth Redirect Route
 router.get('/auth/google', (req, res) => {

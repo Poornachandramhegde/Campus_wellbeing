@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_BASE, safeJson } from '../config/api';
 
 export const AuthContext = createContext();
-
-const API_BASE = `${import.meta.env.VITE_API_URL || ''}/api`;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -28,7 +27,8 @@ export const AuthProvider = ({ children }) => {
           }
         });
 
-        if (response.ok) {
+        const contentType = response.headers.get('content-type') || '';
+        if (response.ok && contentType.includes('application/json')) {
           const data = await response.json();
           if (data.success && data.user) {
             setUser(data.user);
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
             setToken(null);
             setUser(null);
           }
-        } else {
+        } else if (response.status === 401 || response.status === 403) {
           localStorage.removeItem('erp_token');
           setToken(null);
           setUser(null);
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
+      const data = await safeJson(response, 'Login failed. Invalid response from server.');
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Login failed. Please check your credentials.');
@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(signupData)
       });
 
-      const data = await response.json();
+      const data = await safeJson(response, 'Signup failed. Invalid response from server.');
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Signup failed. Please check your inputs.');

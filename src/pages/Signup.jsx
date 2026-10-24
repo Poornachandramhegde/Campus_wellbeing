@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE } from '../config/api';
 import '../styles.css';
-
-const API_URL = import.meta.env.VITE_API_URL || '';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -36,8 +35,9 @@ const Signup = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/mentors`);
-        if (response.ok) {
+        const response = await fetch(`${API_BASE}/mentors`);
+        const contentType = response.headers.get('content-type') || '';
+        if (response.ok && contentType.includes('application/json')) {
           const data = await response.json();
           if (data.success && Array.isArray(data.mentors)) {
             setMentorsList(data.mentors);
@@ -48,9 +48,11 @@ const Signup = () => {
               }));
             }
           }
+        } else {
+          console.warn(`Mentor fetch returned HTTP ${response.status} (${contentType})`);
         }
       } catch (err) {
-        console.warn('Could not load mentors from backend, using fallback list');
+        console.warn('Could not load mentors from backend:', err.message);
       }
     };
 
