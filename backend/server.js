@@ -9,36 +9,54 @@ const userRoutes = require('./routes/userRoutes');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Enable CORS for frontend requests (supports local localhost:3000 and deployed frontend)
+// Enable CORS for frontend requests (supports local development and deployed frontend)
 const allowedOrigins = [
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
   'https://campus-wellbeing-1kr4.vercel.app',
   'https://campus-wellbeing.vercel.app',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
   process.env.FRONTEND_URL,
   process.env.CLIENT_URL
-].filter(Boolean);
+]
+  .filter(Boolean)
+  .map((origin) => origin.trim().replace(/\/+$/, ''));
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, server-to-server)
-      if (!origin) return callback(null, true);
-      // In development, or if in allowed list, or any vercel.app deployment
-      if (
-        process.env.NODE_ENV !== 'production' ||
-        allowedOrigins.includes(origin) ||
-        origin.endsWith('.vercel.app')
-      ) {
-        return callback(null, true);
-      }
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+
+    const normalizedOrigin = origin.trim().replace(/\/+$/, '');
+
+    if (
+      allowedOrigins.includes(normalizedOrigin) ||
+      normalizedOrigin.endsWith('.vercel.app') ||
+      process.env.NODE_ENV !== 'production'
+    ) {
       return callback(null, true);
-    },
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-    credentials: true
-  })
-);
+    }
+
+    return callback(new Error(`CORS policy: Origin ${origin} not allowed`));
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin'
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+// Apply CORS middleware before any routes and parsers
+app.use(cors(corsOptions));
+
+// Explicitly handle OPTIONS preflight requests across all endpoints
+app.options('*', cors(corsOptions));
 
 // Middleware for parsing JSON requests
 app.use(express.json());
