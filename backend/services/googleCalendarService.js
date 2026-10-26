@@ -2,14 +2,40 @@ const { google } = require('googleapis');
 const { getOAuthClient, hasAuth, clearTokens } = require('../config/googleAuth');
 
 const createCalendarEvent = async (booking) => {
-  if (!hasAuth()) {
+  let isAuthorized = false;
+  try {
+    isAuthorized = await hasAuth();
+  } catch (storageErr) {
+    throw {
+      code: 'GOOGLE_STORAGE_ERROR',
+      message: 'Google integration database storage is currently unavailable.'
+    };
+  }
+
+  if (!isAuthorized) {
     throw {
       code: 'GOOGLE_AUTH_REQUIRED',
       message: 'Google OAuth credentials are required before the real Calendar/Meet integration can be tested.'
     };
   }
 
-  const oauth2Client = getOAuthClient();
+  let oauth2Client;
+  try {
+    oauth2Client = await getOAuthClient();
+  } catch (clientErr) {
+    throw {
+      code: 'GOOGLE_STORAGE_ERROR',
+      message: 'Failed to retrieve Google OAuth credentials from database.'
+    };
+  }
+
+  if (!oauth2Client) {
+    throw {
+      code: 'GOOGLE_AUTH_REQUIRED',
+      message: 'Google OAuth client could not be initialized. Please verify environment credentials.'
+    };
+  }
+
   const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
   // Parse time ("11:00 AM" or "02:30 PM") and date ("2026-08-25")
@@ -95,7 +121,7 @@ const createCalendarEvent = async (booking) => {
       meetingLink: meetingLink
     };
   } catch (error) {
-    console.error('Google Calendar API Error:', error);
+    console.error('Google Calendar API Error:', error.message || error);
     // Handle expired/revoked tokens (invalid_grant) or unauthorized errors
     if (
       error.code === 401 ||
@@ -103,10 +129,14 @@ const createCalendarEvent = async (booking) => {
       error.response?.data?.error === 'invalid_grant' ||
       (error.message && error.message.includes('invalid_grant'))
     ) {
-      clearTokens();
+      await clearTokens();
+      const redirectUri = process.env.GOOGLE_REDIRECT_URI || '';
+      const reauthUrl = redirectUri
+        ? redirectUri.replace(/\/callback\/?$/, '')
+        : '/api/auth/google';
       throw {
         code: 'GOOGLE_AUTH_REQUIRED',
-        message: 'Google OAuth token has expired or been revoked. Please re-authenticate at http://localhost:5000/api/auth/google.'
+        message: `Google OAuth token has expired or been revoked. Please re-authenticate at ${reauthUrl}.`
       };
     }
     throw error;

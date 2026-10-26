@@ -37,12 +37,12 @@ router.get(
 router.get('/counselling/list', getAppointmentsList);
 
 // Google Auth Redirect Route
-router.get('/auth/google', (req, res) => {
-  const oauth2Client = getOAuthClient();
+router.get('/auth/google', async (req, res) => {
+  const oauth2Client = await getOAuthClient({ loadTokens: false });
   if (!oauth2Client) {
     return res.status(500).json({
       success: false,
-      message: 'Google Client credentials are not configured in backend/.env.'
+      message: 'Google Client credentials are not configured in backend environment.'
     });
   }
 
@@ -63,30 +63,41 @@ router.get('/auth/google', (req, res) => {
 
 // Google Auth Callback Route
 router.get('/auth/google/callback', async (req, res) => {
-  const { code } = req.query;
+  const { code, error: authError } = req.query;
+
+  if (authError) {
+    return res.status(400).send(`
+      <div style="font-family: sans-serif; text-align: center; margin-top: 50px;">
+        <h2 style="color: #c0392b;">Google OAuth Authorization Declined</h2>
+        <p>Google returned an error: ${encodeURIComponent(authError)}</p>
+        <p>You can close this window and try again if needed.</p>
+      </div>
+    `);
+  }
+
   if (!code) {
     return res.status(400).send('<h3>Authorization code is missing.</h3>');
   }
 
-  const oauth2Client = getOAuthClient();
+  const oauth2Client = await getOAuthClient({ loadTokens: false });
   if (!oauth2Client) {
-    return res.status(500).send('<h3>Google credentials are not configured in backend/.env.</h3>');
+    return res.status(500).send('<h3>Google credentials are not configured in backend environment.</h3>');
   }
 
   try {
     const { tokens } = await oauth2Client.getToken(code);
-    saveTokens(tokens);
+    await saveTokens(tokens);
     return res.send(`
       <div style="font-family: sans-serif; text-align: center; margin-top: 50px;">
         <h2 style="color: #27ae60;">✓ Google OAuth Authentication Successful</h2>
-        <p>Tokens have been successfully saved to <code>oauth.json</code>.</p>
+        <p>OAuth tokens have been securely persisted.</p>
         <p>You can now return to the ERP application and test the Online counselling booking workflow.</p>
         <button onclick="window.close()" style="padding: 10px 20px; font-size: 1rem; border: none; border-radius: 5px; background: #3498db; color: white; cursor: pointer;">Close Window</button>
       </div>
     `);
   } catch (error) {
-    console.error('Error exchanging OAuth code:', error);
-    return res.status(500).send(`<h3>Authentication failed: ${error.message}</h3>`);
+    console.error('Error exchanging or persisting OAuth code:', error.message);
+    return res.status(500).send('<h3>Authentication failed: Unable to exchange authorization code or persist credentials. Please try again.</h3>');
   }
 });
 

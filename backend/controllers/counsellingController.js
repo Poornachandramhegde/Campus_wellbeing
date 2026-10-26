@@ -132,7 +132,19 @@ const bookCounselling = async (req, res) => {
   // If ONLINE mode, call Google Calendar Service
   if (mode === 'Online') {
     // Check credentials first
-    if (!hasAuth()) {
+    let isAuthorized = false;
+    try {
+      isAuthorized = await hasAuth();
+    } catch (storageError) {
+      console.error('Google OAuth storage check failure:', storageError.message);
+      return res.status(500).json({
+        success: false,
+        errorType: 'GOOGLE_STORAGE_ERROR',
+        message: 'Google integration database storage is currently unavailable. Please try again shortly.'
+      });
+    }
+
+    if (!isAuthorized) {
       return res.status(401).json({
         success: false,
         errorType: 'GOOGLE_AUTH_REQUIRED',
@@ -154,6 +166,13 @@ const bookCounselling = async (req, res) => {
       calendarEventId = googleResult.calendarEventId;
       meetingLink = googleResult.meetingLink;
     } catch (error) {
+      if (error.code === 'GOOGLE_STORAGE_ERROR') {
+        return res.status(500).json({
+          success: false,
+          errorType: 'GOOGLE_STORAGE_ERROR',
+          message: error.message || 'Google integration storage failure.'
+        });
+      }
       if (error.code === 'GOOGLE_AUTH_REQUIRED') {
         return res.status(401).json({
           success: false,

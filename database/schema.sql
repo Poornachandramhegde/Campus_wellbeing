@@ -99,3 +99,18 @@ CREATE TABLE IF NOT EXISTS counselling_notes (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_notes_appointment FOREIGN KEY (appointment_id) REFERENCES appointments (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------
+-- 7. Table: google_oauth_tokens
+-- Stores encrypted Google OAuth tokens for system Calendar/Meet integration
+-- ----------------------------------------------------------
+CREATE TABLE IF NOT EXISTS google_oauth_tokens (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  provider VARCHAR(50) NOT NULL UNIQUE DEFAULT 'google',
+  account_email VARCHAR(255) NULL,
+  encrypted_tokens TEXT NOT NULL,
+  iv VARCHAR(64) NOT NULL,
+  auth_tag VARCHAR(64) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
